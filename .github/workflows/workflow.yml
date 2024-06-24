@@ -3,10 +3,10 @@ name: CI
 on:
   schedule:
     - cron: '*/1 * * * *'
-  # push:
-  #   branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -15,11 +15,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Run a one-line script
+
+      - name: Configure Git for GitHub Actions
         run: |
-         echo " " >> README.md
-         git config user.name redolf250
-         git config user.email redolfkendrick@gmail.com
-         git add .
-         git commit -m "Always Green!"
-         git push
+          git config user.name "redolf250"
+          git config user.email "redolfkendrick@gmail.com"
+
+      - name: Run a one-line script
+        env:
+          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
+        run: |
+          echo " " >> README.md
+          git add README.md
+          git commit -m "Always Green!"
+          git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/redolf250/x86_x64.git HEAD:main
