@@ -1,31 +1,25 @@
-name: CI
+name: Update README
 
 on:
-  # schedule:
-  #   - cron: '*/1 * * * *'
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  build:
+  update-readme:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Configure Git for GitHub Actions
-        run: |
-          git config user.name "redolf250"
-          git config user.email "redolfkendrick@gmail.com"
+      - name: Echo empty string into README
+        run: echo " " >> README.md
 
-      - name: Run a one-line script
-        env:
-          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
+      - name: Commit changes
         run: |
-          echo " " >> README.md
+          git config --global user.name 'redolf250'
+          git config --global user.email 'redolfkendrick@gmail.com'
           git add README.md
-          git commit -m "Always Green!"
-          git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/redolf250/x86_x64.git HEAD:main
+          git commit -m "Update README with an empty string"
+          git push
